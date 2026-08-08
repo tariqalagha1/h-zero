@@ -1,0 +1,52 @@
+# H-Zero — Headless Browser Sandbox
+# Playwright + Chromium with anti-detection patches
+# Runs in isolated-egress network zone — outbound only
+
+FROM mcr.microsoft.com/playwright/python:v1.52.0-noble
+
+WORKDIR /app
+
+# Install anti-detection tools (pin playwright to match base image)
+RUN pip install --no-cache-dir \
+    "playwright==1.52.0" \
+    playwright-stealth \
+    httpx \
+    aiohttp \
+    structlog
+
+# Install Node.js for puppeteer-extra-plugin-stealth fallback
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g puppeteer-extra puppeteer-extra-plugin-stealth
+
+# Create non-root user for sandbox
+RUN useradd -m -s /bin/bash browser && \
+    mkdir -p /home/browser/.cache && \
+    chown -R browser:browser /home/browser /app
+
+# Drop root privileges for runtime
+USER browser
+WORKDIR /home/browser
+
+# Install system dependencies for Chromium (base image already has browsers)
+USER root
+RUN python -m playwright install-deps chromium
+
+# Switch back to non-root for runtime
+USER browser
+
+# Copy H-Zero browser service
+COPY --chown=browser:browser services/browser/ /app/services/browser/
+COPY --chown=browser:browser packages/ /app/packages/
+COPY --chown=browser:browser tests/e2e/test_sandbox_isolation.py /app/tests/e2e/test_sandbox_isolation.py
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+ENV DISPLAY=:99
+ENV BROWSER_HEADLESS=true
+ENV BROWSER_STEALTH_MODE=true
+ENV PYTHONPATH=/app
+
+EXPOSE 9222
+
+# Start browser sandbox API
+CMD ["python", "-m", "services.browser.sandbox"]

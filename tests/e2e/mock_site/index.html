@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>H-Zero Test Site — Scientific Discovery Platform</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f0f2f5; }
+  header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 2rem; }
+  header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+  header p { opacity: 0.8; }
+  nav { background: #0f3460; padding: 0.75rem 2rem; display: flex; gap: 1.5rem; }
+  nav a { color: white; text-decoration: none; font-weight: 500; }
+  nav a:hover { text-decoration: underline; }
+  main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+  .card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .card h2 { color: #0f3460; margin-bottom: 1rem; }
+  .card p { color: #555; margin-bottom: 0.75rem; }
+  .search-box { display: flex; gap: 0.5rem; margin: 1rem 0; }
+  .search-box input { flex: 1; padding: 0.75rem 1rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem; }
+  .search-box input:focus { border-color: #0f3460; outline: none; }
+  .search-box button { padding: 0.75rem 1.5rem; background: #0f3460; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 600; }
+  .search-box button:hover { background: #1a5276; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #eee; }
+  th { background: #f7f8fa; font-weight: 600; color: #0f3460; }
+  tr:hover { background: #f7f8fa; }
+  .btn { display: inline-block; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; }
+  .btn-primary { background: #0f3460; color: white; }
+  .btn-primary:hover { background: #1a5276; }
+  .btn-secondary { background: #e2e8f0; color: #333; }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; margin-bottom: 0.25rem; font-weight: 600; color: #333; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.5rem 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 0.95rem; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #0f3460; outline: none; }
+  .result { margin-top: 1rem; padding: 1rem; border-radius: 6px; }
+  .result.success { background: #d4edda; border: 1px solid #c3e6cb; }
+  .result.error { background: #f8d7da; border: 1px solid #f5c6cb; }
+  #dynamic-content { margin-top: 1rem; }
+  footer { text-align: center; padding: 2rem; color: #888; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>H-Zero Test Site</h1>
+  <p>Mock scientific discovery platform for E2E agent testing</p>
+</header>
+
+<nav>
+  <a href="#" onclick="showSection('home')">Home</a>
+  <a href="#" onclick="showSection('research')">Research</a>
+  <a href="#" onclick="showSection('form')">Submit Finding</a>
+  <a href="#" onclick="showSection('about')">About</a>
+</nav>
+
+<main>
+  <!-- Home Section -->
+  <section id="section-home" class="card">
+    <h2>Welcome to the H-Zero Test Platform</h2>
+    <p>This is a mock scientific discovery platform used for end-to-end testing of autonomous web agents.</p>
+    <p>The agent should be able to navigate this site, search for research papers, fill out forms, and extract structured data.</p>
+
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Search research papers... (try 'aspirin', 'cancer', 'covid')" />
+      <button id="search-btn" onclick="performSearch()">Search</button>
+    </div>
+
+    <div id="search-results"></div>
+    <div id="dynamic-content"></div>
+  </section>
+
+  <!-- Research Section (hidden by default) -->
+  <section id="section-research" class="card" style="display:none;">
+    <h2>Research Database</h2>
+    <p>Browse recent scientific findings and evidence records.</p>
+    <table id="research-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Journal</th>
+          <th>Date</th>
+          <th>Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Aspirin and Colorectal Cancer Prevention</td>
+          <td>New England Journal of Medicine</td>
+          <td>2024-03</td>
+          <td>RCT, n=15,000</td>
+        </tr>
+        <tr>
+          <td>Metformin in Aging: TAME Trial Results</td>
+          <td>The Lancet</td>
+          <td>2024-06</td>
+          <td>RCT, n=3,000</td>
+        </tr>
+        <tr>
+          <td>GLP-1 Agonists and Cardiovascular Outcomes</td>
+          <td>JAMA</td>
+          <td>2024-01</td>
+          <td>Meta-analysis</td>
+        </tr>
+        <tr>
+          <td>CRISPR-Cas9 Delivery via Lipid Nanoparticles</td>
+          <td>Nature Biotechnology</td>
+          <td>2024-04</td>
+          <td>Preclinical</td>
+        </tr>
+        <tr>
+          <td>Ketogenic Diet and Glioblastoma</td>
+          <td>Cell Metabolism</td>
+          <td>2024-02</td>
+          <td>Phase II</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Form Section (hidden by default) -->
+  <section id="section-form" class="card" style="display:none;">
+    <h2>Submit a Finding</h2>
+    <p>Fill out this form to submit a new scientific finding for verification.</p>
+
+    <form id="finding-form" onsubmit="submitFinding(event)">
+      <div class="form-group">
+        <label for="title">Title *</label>
+        <input type="text" id="title" name="title" required placeholder="e.g., Novel biomarker for early detection" />
+      </div>
+
+      <div class="form-group">
+        <label for="journal">Journal</label>
+        <input type="text" id="journal" name="journal" placeholder="e.g., Nature, Science, NEJM" />
+      </div>
+
+      <div class="form-group">
+        <label for="study-type">Study Type *</label>
+        <select id="study-type" name="study-type" required>
+          <option value="">-- Select --</option>
+          <option value="rct">Randomized Controlled Trial</option>
+          <option value="cohort">Cohort Study</option>
+          <option value="case-control">Case-Control</option>
+          <option value="meta-analysis">Meta-Analysis</option>
+          <option value="preclinical">Preclinical</option>
+          <option value="in-vitro">In Vitro</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sample-size">Sample Size</label>
+        <input type="number" id="sample-size" name="sample-size" min="1" placeholder="e.g., 5000" />
+      </div>
+
+      <div class="form-group">
+        <label for="endpoint">Primary Endpoint</label>
+        <input type="text" id="endpoint" name="endpoint" placeholder="e.g., Overall survival, HbA1c reduction" />
+      </div>
+
+      <div class="form-group">
+        <label for="effect">Effect Estimate</label>
+        <input type="text" id="effect" name="effect" placeholder="e.g., HR 0.72 (95% CI 0.60-0.86)" />
+      </div>
+
+      <div class="form-group">
+        <label for="finding-summary">Finding Summary *</label>
+        <textarea id="finding-summary" name="finding-summary" rows="4" required
+          placeholder="Describe the key finding in 2-3 sentences..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="submit-btn">Submit Finding</button>
+      <button type="reset" class="btn btn-secondary">Clear</button>
+    </form>
+
+    <div id="form-result"></div>
+  </section>
+
+  <!-- About Section (hidden by default) -->
+  <section id="section-about" class="card" style="display:none;">
+    <h2>About H-Zero Test Platform</h2>
+    <p>This mock platform is deployed as part of the H-Zero autonomous agent infrastructure build verification suite.</p>
+    <p>It provides:</p>
+    <ul style="margin: 1rem 0 1rem 1.5rem;">
+      <li>Dynamic content sections navigable by autonomous agents</li>
+      <li>Searchable research database with structured data extraction targets</li>
+      <li>Multi-field forms for testing agent form-filling capabilities</li>
+      <li>JavaScript-driven interactions requiring proper DOM event handling</li>
+    </ul>
+    <p><strong>H-Zero Version:</strong> 0.1.0 </p>
+    <p><strong>Status:</strong> Operational </p>
+  </section>
+</main>
+
+<footer>
+  H-Zero Autonomous Agent Test Platform — Not for production use
+</footer>
+
+<script src="dynamic.js"></script>
+</body>
+</html>

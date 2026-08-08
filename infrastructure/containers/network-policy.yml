@@ -1,0 +1,15 @@
+# H-Zero — Dual-Network Docker Compose
+# Two distinct networks:
+#   1. private-internal: LLM inference + database (no external access)
+#   2. isolated-egress: browser fleet + outbound scraping (NAT-only)
+# Plus public-facing services (API, web, nginx)
+
+networks:
+  private-internal:
+    internal: true       # No internet access — LLM + DB only
+    driver: bridge
+  isolated-egress:
+    internal: false      # Outbound internet via host — browser fleet
+    driver: bridge
+  public:
+    driver: bridge        # Public-facing — API, web, nginx

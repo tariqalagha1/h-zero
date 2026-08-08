@@ -1,0 +1,91 @@
+{
+  "scenario": "aspirin-cancer-search-and-security-audit",
+  "timestamp": "2026-08-08T16:35:34.365155+00:00",
+  "duration_seconds": 1.0,
+  "infrastructure": "all-live",
+  "acts": {
+    "browser_search": {
+      "state": "COMPLETED",
+      "verdict": "GOAL_ACHIEVED",
+      "cycles": 7,
+      "steps": 26,
+      "extracted": {}
+    },
+    "security_audit": {
+      "probes": 3,
+      "findings": 0,
+      "by_severity": {},
+      "targets_probed": 1,
+      "sample_entries": [
+        {
+          "step": 1,
+          "target": "http://localhost:8000",
+          "hypothesis": "Server may leak version or error information",
+          "outcome": "REJECTED"
+        },
+        {
+          "step": 2,
+          "target": "http://localhost:8000",
+          "hypothesis": "Testing auth_bypass vulnerabilities",
+          "outcome": "REJECTED"
+        },
+        {
+          "step": 3,
+          "target": "http://localhost:8000",
+          "hypothesis": "Testing cors_misconfiguration vulnerabilities",
+          "outcome": "REJECTED"
+        }
+      ]
+    },
+    "http_verification": [
+      {
+        "method": "GET",
+        "url": "http://localhost:8000/health",
+        "status": 200,
+        "ms": 2.999468008056283,
+        "server": "uvicorn"
+      },
+      {
+        "method": "GET",
+        "url": "http://localhost:8000/health/ready",
+        "status": 200,
+        "ms": 2.6265840278938413,
+        "server": "uvicorn"
+      },
+      {
+        "method": "GET",
+        "url": "http://localhost:8000/docs",
+        "status": 200,
+        "ms": 1.0157930082641542,
+        "server": "uvicorn"
+      },
+      {
+        "method": "HEAD",
+        "url": "http://localhost:8000/",
+        "status": 404,
+        "ms": 1.0880830232053995,
+        "server": "uvicorn"
+      }
+    ],
+    "embedding_pipeline": {
+      "records": 5,
+      "tokens": 54,
+      "ms": 3.7803190061822534,
+      "hashes": [
+        "db74ca633333",
+        "21b84d12a819",
+        "8462023f9072",
+        "225eea7ac33b",
+        "b6bb21ea6e11"
+      ]
+    },
+    "infrastructure_checks": {
+      "api_health": true,
+      "db_ready": true,
+      "browser_health": true,
+      "qdrant": true,
+      "postgres": true
+    }
+  },
+  "verdict": "COMPLETE"
+}
