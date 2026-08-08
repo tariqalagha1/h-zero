@@ -60,12 +60,12 @@ For each target endpoint, continuously execute this 4-step loop:
    - If vulnerability verified: Document finding, assess severity, evaluate for secondary testing paths.
    - If probe fails: Refine your model of the target and update testing strategy.
 
-## Safety Guardrails
+## Safety Guardrails & Operational Constraints
 
-- STRICT SCOPE: Only target assigned IPs, URLs, or localhost. Never probe external domains.
-- NON-DESTRUCTIVE: Avoid payloads that write garbage data, drop tables, or alter state.
-- DEPTH CAP: Maximum 5 iterations per discovered target asset.
-- RESOURCE BUDGET: Stop if token/time/quota limits are reached.
+- STRICT SCOPE LIMITS: Only target explicitly assigned IP addresses, URLs, or local container interfaces (localhost, sandbox subnets). Do not probe external or unapproved domains under any circumstances.
+- NON-DESTRUCTIVE TESTING: Avoid payloads or commands that write garbage data, drop tables, alter production state, or trigger denial-of-service conditions.
+- RECURSION & DEPTH CAPS: Limit adaptive test chains to a maximum depth of 5 iterations per discovered target asset.
+- RESOURCE BUDGETING: Terminate the testing loop if the allocated token count, execution time limit, or request quota is reached.
 
 ## Available Probe Categories
 
@@ -111,6 +111,7 @@ class SecurityAssessmentConfig:
         max_iterations: int = 20,
         max_per_target: int = 5,
         max_duration_seconds: int = 600,
+        max_tokens: int = 100_000,
         non_destructive_only: bool = True,
         allowed_domains: list[str] = None,
         allowed_subnets: list[str] = None,
@@ -121,9 +122,20 @@ class SecurityAssessmentConfig:
         self.max_iterations = max_iterations
         self.max_per_target = max_per_target
         self.max_duration_seconds = max_duration_seconds
+        self.max_tokens = max_tokens
+        self._tokens_used = 0
         self.non_destructive_only = non_destructive_only
         self.allowed_domains = allowed_domains or []
         self.allowed_subnets = allowed_subnets or []
+
+    def consume_tokens(self, count: int) -> bool:
+        """Track token usage. Returns False if budget exhausted."""
+        self._tokens_used += count
+        return self._tokens_used < self.max_tokens
+
+    @property
+    def tokens_remaining(self) -> int:
+        return max(0, self.max_tokens - self._tokens_used)
 
 
 # ── Adaptive Security Loop ──────────────────────────────────────────────────
@@ -196,6 +208,11 @@ class AdaptiveSecurityLoop:
                 # Time budget check
                 if time.time() - start_time > config.max_duration_seconds:
                     logger.info(f"Time budget exhausted at iteration {iteration}")
+                    break
+
+                # Token budget check
+                if config.tokens_remaining <= 0:
+                    logger.info(f"Token budget exhausted at iteration {iteration}")
                     break
 
                 iteration += 1
