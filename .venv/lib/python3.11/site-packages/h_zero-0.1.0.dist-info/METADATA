@@ -1,0 +1,68 @@
+Metadata-Version: 2.4
+Name: h-zero
+Version: 0.1.0
+Summary: H-Zero — Autonomous agent layer on H-Scraper. ReAct loop, browser fleet, security testing, embeddings.
+License: Proprietary
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.115.0
+Requires-Dist: uvicorn[standard]>=0.30.0
+Requires-Dist: pydantic>=2.8.0
+Requires-Dist: pydantic-settings>=2.5.0
+Requires-Dist: httpx>=0.27.0
+Requires-Dist: structlog>=24.4.0
+Requires-Dist: aiohttp>=3.9.0
+Requires-Dist: tenacity>=9.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.3.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.24.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0.0; extra == "dev"
+Requires-Dist: ruff>=0.6.0; extra == "dev"
+Requires-Dist: mypy>=1.11.0; extra == "dev"
+Requires-Dist: bandit>=1.7.0; extra == "dev"
+Requires-Dist: safety>=3.0.0; extra == "dev"
+
+# H-Zero
+
+Autonomous agent layer on H-Scraper.
+
+- **ReAct agent loop** — Plan → Act → Observe → Evaluate for autonomous web interaction
+- **Browser fleet** — Headless Playwright sandboxes with anti-detection
+- **Security testing** — OWASP probe catalog (26 probes), adaptive Observe→Hypothesize→Synthesize→Evaluate loop
+- **Embedding pipeline** — Vector generation and Qdrant storage
+- **Verifier** — Transport-layer evidence, deterministic checks
+- **H-Scraper skills** — Scrape, jobs, assistant, health
+
+## Architecture
+
+```
+h-zero/                    # This project — agent layer
+├── services/
+│   ├── agent/             # ReAct loop + security testing
+│   ├── browser/           # Playwright sandbox fleet
+│   └── embedding/         # Vector pipeline
+├── packages/security/     # Vault integration
+├── infrastructure/        # Docker, Terraform, seccomp
+├── tests/                 # E2E + unit tests
+└── scripts/               # Health probes, security checks
+```
+
+H-Zero depends on H-Scraper for:
+- Web scraping (`/api/v1/scrape`)
+- Job lifecycle (`/api/v1/jobs`, `/api/v1/runs`)
+- AI prompt refinement (`/api/v1/assistant/request-refinement`)
+- System health (`/api/v1/health`, `/api/v1/system/capabilities`)
+
+## Quick Start
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+## Environment
+
+```bash
+HSCRAPER_BASE_URL=https://scraper.internal  # H-Scraper API
+HSCRAPER_API_KEY=...                        # API key for auth
+```
