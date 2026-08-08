@@ -1,0 +1,50 @@
+{
+  "inspection_certificate": {
+    "target_identifier": "h-zero-zero-attack",
+    "compliance_status": "COMPLIANT",
+    "built_in_checks": {
+      "self_reflection_hooks": "PASSED",
+      "event_driven_listeners": "PASSED",
+      "subgoal_discovery_bounds": "PASSED",
+      "sandbox_isolation_controls": "PASSED"
+    }
+  },
+  "adaptive_test_trace": [
+    {
+      "iteration": 1,
+      "target_component": "http://localhost:8000",
+      "observation": "Status: 404 | Content-Type: application/json | Server: uvicorn | Response time: 54ms | Body length: 22 bytes | Target type: api | Technologies: fastapi",
+      "hypothesis": "Server may leak version or error information",
+      "probe_executed": "information_disclosure: %00",
+      "outcome": "REJECTED",
+      "remediation_applied": "None needed"
+    },
+    {
+      "iteration": 2,
+      "target_component": "http://localhost:8000",
+      "observation": "Status: 404 | Time: 1ms | Verdict: AuditOutcome.REJECTED | Evidence: No vulnerability indicators detected",
+      "hypothesis": "Testing xss vulnerabilities",
+      "probe_executed": "xss: \"><svg onload=alert(1)>",
+      "outcome": "REJECTED",
+      "remediation_applied": "None needed"
+    },
+    {
+      "iteration": 3,
+      "target_component": "http://localhost:8000",
+      "observation": "Status: 404 | Time: 1ms | Verdict: AuditOutcome.REJECTED | Evidence: No vulnerability indicators detected",
+      "hypothesis": "Testing auth_bypass vulnerabilities",
+      "probe_executed": "auth_bypass: ",
+      "outcome": "REJECTED",
+      "remediation_applied": "None needed"
+    },
+    {
+      "iteration": 4,
+      "target_component": "http://localhost:8000",
+      "observation": "Status: 404 | Time: 1ms | Verdict: AuditOutcome.REJECTED | Evidence: No vulnerability indicators detected",
+      "hypothesis": "Testing idor vulnerabilities",
+      "probe_executed": "idor: ",
+      "outcome": "REJECTED",
+      "remediation_applied": "None needed"
+    }
+  ]
+}
