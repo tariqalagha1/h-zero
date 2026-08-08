@@ -24,3 +24,5 @@ services/browser/fleet.py
 services/browser/sandbox.py
 services/embedding/__init__.py
 services/embedding/pipeline.py
+services/gateway/__init__.py
+services/gateway/llm_gateway.py

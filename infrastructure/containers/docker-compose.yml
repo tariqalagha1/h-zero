@@ -1,0 +1,74 @@
+# H-Zero — Standalone Docker Compose
+# Agent layer infrastructure: API server, Qdrant, browser sandbox
+# H-Scraper provides PostgreSQL/Redis/Celery — not duplicated here
+
+services:
+  # ── API Server ──────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/containers/Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      HSCRAPER_BASE_URL: ${HSCRAPER_BASE_URL:-http://h-scraper:8000}
+      HSCRAPER_API_KEY: ${HSCRAPER_API_KEY:-}
+      QDRANT_HOST: ${QDRANT_HOST:-qdrant}
+      QDRANT_PORT: ${QDRANT_PORT:-6333}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      retries: 5
+
+  # ── Qdrant Vector Database ──────────────────────────────────────────
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      retries: 5
+
+  # ── Browser Fleet (egress-only) ─────────────────────────────────────
+  browser-sandbox:
+    build:
+      context: .
+      dockerfile: infrastructure/containers/Dockerfile.browser
+    ports:
+      - "9222:9222"
+    security_opt:
+      - seccomp:infrastructure/containers/seccomp-browser.json
+    cap_drop:
+      - ALL
+    cap_add:
+      - SYS_ADMIN
+    mem_limit: 2g
+    memswap_limit: 2g
+    environment:
+      BROWSER_HEADLESS: "true"
+      BROWSER_STEALTH_MODE: "true"
+      PROXY_URL: ${PROXY_URL:-}
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9222/health"]
+      interval: 10s
+      retries: 5
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  qdrant_data:
