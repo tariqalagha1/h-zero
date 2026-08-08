@@ -1,0 +1,50 @@
+{
+  "inspection_certificate": {
+    "target_identifier": "h-zero-live-api",
+    "compliance_status": "COMPLIANT",
+    "built_in_checks": {
+      "self_reflection_hooks": "PASSED",
+      "event_driven_listeners": "PASSED",
+      "subgoal_discovery_bounds": "PASSED",
+      "sandbox_isolation_controls": "PASSED"
+    }
+  },
+  "adaptive_test_trace": [
+    {
+      "iteration": 1,
+      "target_component": "http://localhost:8000",
+      "observation": "Status: 404 | Content-Type: application/json | Server: uvicorn | Response time: 53ms | Body length: 22 bytes | Target type: api | Technologies: fastapi",
+      "hypothesis": "Server may leak version or error information",
+      "probe_executed": "information_disclosure: %00",
+      "outcome": "REJECTED",
+      "remediation_applied": "None needed \u2014 API is healthy"
+    },
+    {
+      "iteration": 2,
+      "target_component": "http://localhost:8000",
+      "observation": "Status: 404 | Time: 1ms | Verdict: AuditOutcome.REJECTED | Evidence: No vulnerability indicators detected",
+      "hypothesis": "Testing auth_bypass vulnerabilities",
+      "probe_executed": "auth_bypass: {\"alg\":\"none\",\"typ\":\"JWT\"}",
+      "outcome": "REJECTED",
+      "remediation_applied": "None needed \u2014 API is healthy"
+    },
+    {
+      "iteration": 3,
+      "target_component": "http://localhost:8000",
+      "observation": "Status: 404 | Time: 1ms | Verdict: AuditOutcome.REJECTED | Evidence: No vulnerability indicators detected",
+      "hypothesis": "Testing cors_misconfiguration vulnerabilities",
+      "probe_executed": "cors_misconfiguration: ",
+      "outcome": "REJECTED",
+      "remediation_applied": "None needed \u2014 API is healthy"
+    },
+    {
+      "iteration": 4,
+      "target_component": "http://localhost:8000",
+      "observation": "Status: 404 | Time: 1ms | Verdict: AuditOutcome.REJECTED | Evidence: No vulnerability indicators detected",
+      "hypothesis": "Testing header_injection vulnerabilities",
+      "probe_executed": "header_injection: test\r\nSet-Cookie: injected=true",
+      "outcome": "REJECTED",
+      "remediation_applied": "None needed \u2014 API is healthy"
+    }
+  ]
+}
