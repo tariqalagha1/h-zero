@@ -71,7 +71,7 @@ h-zero/
 pip install -e ".[dev]"
 
 # Run tests
-pytest                          # 73 passed, 13 skipped
+pytest                          # 79 passed, 7 skipped
 
 # Start with Docker
 docker compose -f infrastructure/containers/docker-compose.yml up -d
@@ -100,7 +100,7 @@ QDRANT_PORT=6333
 ## Test Results
 
 ```
-73 passed, 13 skipped, 0 failed
+79 passed, 7 skipped, 0 failed
 
 Breakdown:
   34 security tests (probes, audit, scope, HTTP, evaluation)
